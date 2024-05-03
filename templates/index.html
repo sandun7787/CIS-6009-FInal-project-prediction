@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/47101d2035.js" crossorigin="anonymous"></script>
+   
+    <title>Survival Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: calc(100% - 12px);
+            padding: 6px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            display: none;
+        }
+        .popup p {
+            margin: 0;
+            text-align: center;
+        }
+        .popup .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+        .popup.show {
+            display: block;
+        }
+        .green-text {
+            color: green;
+        }
+        .red-text {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        <i class="fas fa-ship"></i> Titanic Survival Predictor
+    </h1>
+   
+    <form method="post" action="/predict">
+        <label for="feature0">PassangerID</label>
+        <input type="text" name="0" required><br>
+
+        <label for="feature1">Pclass</label>
+        <input type="text" name="1" required><br>
+
+        <label for="feature2">Sex</label>
+        <input type="text" name="2" required><br>
+
+        <label for="feature3">Age</label>
+        <input type="text" name="3" required><br>
+
+        <label for="feature4">Slibsp</label>
+        <input type="text" name="4" required><br>
+
+        <label for="feature5">Parch</label>
+        <input type="text" name="5" required><br>
+
+        <label for="feature6">Fare</label>
+        <input type="text" name="6" required><br>
+
+        <label for="feature7">Embarked</label>
+        <input type="text" name="7" required><br>
+
+        <button type="submit">Predict</button>
+    </form>
+
+    <div id="popupResult" class="popup">
+        <span class="close-btn" onclick="closePopup()">X</span>
+        <p id="resultMessage"></p>
+    </div>
+
+    {% if result %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var result = "{{ result }}";
+                var popup = document.getElementById('popupResult');
+                var message = document.getElementById('resultMessage');
+                message.innerHTML = "Prediction: " + result;
+                if (result.toLowerCase() === "survived") {
+                    message.classList.add('green-text');
+                } else {
+                    message.classList.add('red-text');
+                }
+                popup.classList.add('show');
+                setTimeout(function() {
+                    closePopup();
+                }, 3000); // Adjust the duration of the popup display here (in milliseconds)
+            });
+
+            function closePopup() {
+                var popup = document.getElementById('popupResult');
+                popup.classList.remove('show');
+            }
+        </script>
+    {% endif %}
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+</body>
+</html>
